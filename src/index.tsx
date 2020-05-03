@@ -1,7 +1,16 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import App from './App'
 import * as serviceWorker from './serviceWorker'
+import GameBoard from './components/GameBoard/GameBoard'
+
+import { NoClue } from './game'
+import { Client } from 'boardgame.io/react'
+
+const App = Client({
+    game: NoClue,
+    numPlayers: 6,
+    board: GameBoard,
+})
 
 ReactDOM.render(
     <React.StrictMode>

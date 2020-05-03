@@ -1,15 +1,17 @@
 import React from 'react'
-import { Client } from 'boardgame.io/react'
 
-class GameBoard extends React.Component {
-    onClick(id) {
+import './GameBoard.scss'
+
+// TODO Proper typing
+export default class GameBoard extends React.Component<any, any> {
+    onClick(id: number) {
         if (this.isActive(id)) {
             this.props.moves.clickCell(id)
             this.props.events.endTurn()
         }
     }
 
-    isActive(id) {
+    isActive(id: number) {
         if (!this.props.isActive) return false
         if (this.props.G.cells[id] !== null) return false
         return true
@@ -17,7 +19,7 @@ class GameBoard extends React.Component {
 
     render() {
         const { playerPosition, cells } = this.props.G
-        let winner = ''
+        let winner: any = null
         if (this.props.ctx.gameover) {
             winner =
                 this.props.ctx.gameover.winner !== undefined ? (
@@ -27,15 +29,6 @@ class GameBoard extends React.Component {
                 ) : (
                     <div id="winner">Draw!</div>
                 )
-        }
-
-        const cellStyle = {
-            border: '1px solid #555',
-            width: '50px',
-            height: '50px',
-            lineHeight: '50px',
-            textAlign: 'center',
-            backgroundColor: '#333',
         }
 
         let tbody = []
@@ -48,17 +41,13 @@ class GameBoard extends React.Component {
                 for (let key in playerPosition) {
                     if (playerPosition.hasOwnProperty(key)) {
                         if (id === playerPosition[key]) {
-                            const playerStyle = {
-                                color: key,
-                                fontWeight: 'bold',
-                            }
                             tCells.push(
                                 <td
-                                    style={cellStyle}
+                                    className="cell"
                                     key={id}
                                     onClick={() => this.onClick(id)}
                                 >
-                                    <span style={playerStyle}>P</span>
+                                    <span style={{ color: key }} className="player">P</span>
                                 </td>
                             )
                             skip = true
@@ -73,7 +62,7 @@ class GameBoard extends React.Component {
 
                 tCells.push(
                     <td
-                        style={cellStyle}
+                        className="cell"
                         key={id}
                         onClick={() => this.onClick(id)}
                     >
@@ -94,42 +83,3 @@ class GameBoard extends React.Component {
         )
     }
 }
-
-function IsVictory(cells) {}
-
-function IsDraw(cells) {}
-
-const NoClue = {
-    setup: () => ({
-        cells: Array(324).fill(null),
-        playerPosition: {
-            red: 311,
-            yellow: 216,
-            white: 6,
-            blue: 11,
-            green: 179,
-            purple: 251,
-        },
-    }),
-
-    moves: {
-        clickCell: (G, ctx, id) => {},
-    },
-
-    endIf: (G, ctx) => {
-        if (IsVictory(G.cells)) {
-            return { winner: ctx.currentPlayer }
-        }
-        if (IsDraw(G.cells)) {
-            return { draw: true }
-        }
-    },
-}
-
-const App = Client({
-    game: NoClue,
-    numPlayers: 6,
-    board: GameBoard,
-})
-
-export default App
