@@ -1,5 +1,7 @@
 import React from 'react'
 
+import { rooms } from '../../utils'
+
 import './GameBoard.scss'
 
 // TODO Proper typing
@@ -32,6 +34,8 @@ export default class GameBoard extends React.Component<any, any> {
         }
 
         let tbody = []
+        let roomCells = [] // Store cells that are being merged (for rooms) and won't be pushed as a single cell
+
         for (let i = 0; i < 18; i++) {
             let tCells = []
             for (let j = 0; j < 18; j++) {
@@ -47,7 +51,12 @@ export default class GameBoard extends React.Component<any, any> {
                                     key={id}
                                     onClick={() => this.onClick(id)}
                                 >
-                                    <span style={{ color: key }} className="player">P</span>
+                                    <span
+                                        style={{ color: key }}
+                                        className="player"
+                                    >
+                                        P
+                                    </span>
                                 </td>
                             )
                             skip = true
@@ -60,15 +69,40 @@ export default class GameBoard extends React.Component<any, any> {
                     continue
                 }
 
-                tCells.push(
-                    <td
-                        className="cell"
-                        key={id}
-                        onClick={() => this.onClick(id)}
-                    >
-                        {cells[id]}
-                    </td>
-                )
+                // Draw rooms
+                for (let key in rooms) {
+                    if (rooms.hasOwnProperty(key)) {
+                        if (id === rooms[key].startRange) {
+                            tCells.push(
+                                <td
+                                    rowSpan={rooms[key].height}
+                                    colSpan={rooms[key].width}
+                                    className="cell"
+                                    key={id}
+                                    onClick={() => this.onClick(id)}
+                                >
+                                    {key}
+                                </td>
+                            )
+                            for (let range of rooms[key].range) {
+                                roomCells.push(range)
+                            }
+                        }
+                    }
+                }
+
+                // Don't draw cells that were merged for the rooms
+                if (!roomCells.includes(id)) {
+                    tCells.push(
+                        <td
+                            className="cell"
+                            key={id}
+                            onClick={() => this.onClick(id)}
+                        >
+                            {cells[id]}
+                        </td>
+                    )
+                }
             }
             tbody.push(<tr key={i}>{tCells}</tr>)
         }
