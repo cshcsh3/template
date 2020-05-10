@@ -11,7 +11,7 @@ const rooms: Rooms = {
     conservatory: roomRange(14, 4, 4),
     billiardRoom: roomRange(104, 3, 4),
     diningRoom: roomRange(108, 3, 5),
-    clue: roomRange(115, 5, 5),
+    noclue: roomRange(115, 5, 5),
     library: roomRange(194, 3, 4),
     hall: roomRange(241, 5, 5),
     lounge: roomRange(252, 4, 5),
@@ -22,41 +22,53 @@ export const NoClue = {
     setup: () => ({
         cells: Array(324).fill(null),
         playerPosition: {
-            0: { 
-                startPos: 311, 
-                color: 'red' 
+            0: {
+                pos: 311,
+                color: 'red',
             },
-            1: { 
-                startPos: 216,
-                color: 'gold'
+            1: {
+                pos: 216,
+                color: 'gold',
             },
             2: {
-                startPos: 6,
-                color: 'white'
+                pos: 6,
+                color: 'white',
             },
             3: {
-                startPos: 11,
-                color: 'dodgerblue'
+                pos: 11,
+                color: 'dodgerblue',
             },
             4: {
-                startPos: 179,
-                color: 'forestgreen'
+                pos: 179,
+                color: 'forestgreen',
             },
             5: {
-                startPos: 251,
-                color: 'plum'
+                pos: 251,
+                color: 'plum',
             },
         },
         rooms,
     }),
 
     moves: {
-         rollDice: (G: any, ctx: any) => ({
-            ...G,
-            dice: ctx.random.D6()
-         }),
+        rollDice: (G: any, ctx: any) => {
+            const dice = ctx.random.D6()
+            const movesLeft = dice
+            return {
+                ...G,
+                dice,
+                movesLeft,
+            }
+        },
+        movePlayer: (G: any, ctx: any, id: number) => {
+            G.playerPosition[ctx.currentPlayer].pos = id
+            G.movesLeft--
+            if (G.movesLeft === 0) {
+                G.dice = null
+                ctx.events.endTurn()
+            }
+        },
     },
 
-    endIf: (G: any, ctx: any) => {
-    },
+    endIf: (G: any, ctx: any) => {},
 }
