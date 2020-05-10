@@ -1,38 +1,17 @@
 import React from 'react'
-
-import { rooms } from '../../utils'
-
 import './GameBoard.scss'
 
 // TODO Proper typing
 export default class GameBoard extends React.Component<any, any> {
     onClick(id: number) {
-        if (this.isActive(id)) {
-            this.props.moves.clickCell(id)
-            this.props.events.endTurn()
-        }
-    }
-
-    isActive(id: number) {
-        if (!this.props.isActive) return false
-        if (this.props.G.cells[id] !== null) return false
-        return true
+        
     }
 
     render() {
-        const { playerPosition, cells } = this.props.G
-        let winner: any = null
-        if (this.props.ctx.gameover) {
-            winner =
-                this.props.ctx.gameover.winner !== undefined ? (
-                    <div id="winner">
-                        Winner: {this.props.ctx.gameover.winner}
-                    </div>
-                ) : (
-                    <div id="winner">Draw!</div>
-                )
-        }
+        const { playerPosition, cells, rooms, dice } = this.props.G
+        const { currentPlayer } = this.props.ctx
 
+        // Game Board
         let tbody = []
         let roomCells = [] // Store cells that are being merged (for rooms) and won't be pushed as a single cell
 
@@ -44,7 +23,7 @@ export default class GameBoard extends React.Component<any, any> {
 
                 for (let key in playerPosition) {
                     if (playerPosition.hasOwnProperty(key)) {
-                        if (id === playerPosition[key]) {
+                        if (id === playerPosition[key].startPos) {
                             tCells.push(
                                 <td
                                     className="cell"
@@ -52,7 +31,7 @@ export default class GameBoard extends React.Component<any, any> {
                                     onClick={() => this.onClick(id)}
                                 >
                                     <span
-                                        style={{ color: key }}
+                                        style={{ color: playerPosition[key].color }}
                                         className="player"
                                     >
                                         P
@@ -81,7 +60,7 @@ export default class GameBoard extends React.Component<any, any> {
                                     key={id}
                                     onClick={() => this.onClick(id)}
                                 >
-                                    {key}
+                                    {key.toUpperCase()}
                                 </td>
                             )
                             for (let range of rooms[key].range) {
@@ -109,10 +88,13 @@ export default class GameBoard extends React.Component<any, any> {
 
         return (
             <div>
+                <div className="control">
+                    <p className="control__text">Player {currentPlayer}, {(dice) ? `you've rolled ${dice}` : `please roll the dice`}</p>
+                    <input type="button" value="Roll Dice" className="control__button" onClick={() => this.props.moves.rollDice()} />
+                </div>
                 <table id="board">
                     <tbody>{tbody}</tbody>
                 </table>
-                {winner}
             </div>
         )
     }
