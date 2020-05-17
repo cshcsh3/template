@@ -6,19 +6,20 @@ type RoomRange = {
 }
 
 type Room = {
-    name: string,
+    name: string
     roomRange: RoomRange
 }
 type Rooms = Array<Room>
 
-type PlayerPosition = {
-    player: number,
-    pos: number,
+type Players = {
+    player: number
+    pos: number
     color: string
+    hand: Array<Card>
 }
 
 type Card = {
-    name: string,
+    name: string
     type: 'room' | 'suspect' | 'weapon'
 }
 
@@ -48,170 +49,176 @@ const roomRange = (
 export const rooms: Rooms = [
     {
         name: 'Kitchen',
-        roomRange: roomRange(0, 3, 5)
+        roomRange: roomRange(0, 3, 5),
     },
     {
         name: 'Ballroom',
-        roomRange: roomRange(7, 4, 4)
+        roomRange: roomRange(7, 4, 4),
     },
     {
         name: 'Conservatory',
-        roomRange: roomRange(14, 4, 4)
+        roomRange: roomRange(14, 4, 4),
     },
     {
         name: 'Billiard Room',
-        roomRange: roomRange(104, 3, 4)
+        roomRange: roomRange(104, 3, 4),
     },
     {
         name: 'Dining Room',
-        roomRange: roomRange(108, 3, 5)
+        roomRange: roomRange(108, 3, 5),
     },
     {
         name: 'No Clue',
-        roomRange: roomRange(115, 5, 5)
+        roomRange: roomRange(115, 5, 5),
     },
     {
         name: 'Library',
-        roomRange: roomRange(194, 3, 4)
+        roomRange: roomRange(194, 3, 4),
     },
     {
         name: 'Hall',
-        roomRange: roomRange(241, 5, 5)
+        roomRange: roomRange(241, 5, 5),
     },
     {
         name: 'Lounge',
-        roomRange: roomRange(252, 4, 5)
+        roomRange: roomRange(252, 4, 5),
     },
     {
         name: 'Study',
-        roomRange: roomRange(284, 3, 4)
-    }
+        roomRange: roomRange(284, 3, 4),
+    },
 ]
 
-export const playerPosition: Array<PlayerPosition> = [
+export const players: Array<Players> = [
     {
         player: 0,
         pos: 311,
         color: 'red',
+        hand: [],
     },
     {
         player: 1,
         pos: 216,
         color: 'gold',
+        hand: [],
     },
     {
         player: 2,
         pos: 6,
         color: 'white',
+        hand: [],
     },
     {
         player: 3,
         pos: 11,
         color: 'dodgerblue',
+        hand: [],
     },
     {
         player: 4,
         pos: 179,
         color: 'forestgreen',
+        hand: [],
     },
     {
         player: 5,
         pos: 251,
         color: 'plum',
+        hand: [],
     },
 ]
 
 export const roomDeck: Array<Card> = [
-    { 
+    {
         name: 'Kitchen',
-        type: 'room'
+        type: 'room',
     },
     {
         name: 'Ballroom',
-        type: 'room'
+        type: 'room',
     },
     {
         name: 'Conservatory',
-        type: 'room'
+        type: 'room',
     },
     {
         name: 'Billiard Room',
-        type: 'room'
+        type: 'room',
     },
     {
         name: 'Dining Room',
-        type: 'room'
+        type: 'room',
     },
     {
         name: 'Library',
-        type: 'room'
+        type: 'room',
     },
     {
         name: 'Hall',
-        type: 'room'
+        type: 'room',
     },
     {
         name: 'Lounge',
-        type: 'room'
+        type: 'room',
     },
     {
         name: 'Study',
-        type: 'room'
-    }
+        type: 'room',
+    },
 ]
 
 export const suspectDeck: Array<Card> = [
     {
         name: 'Miss Scar',
-        type: 'suspect'
+        type: 'suspect',
     },
     {
         name: 'Dr Snow',
-        type: 'suspect'
+        type: 'suspect',
     },
     {
         name: 'Mrs Pelican',
-        type: 'suspect'
+        type: 'suspect',
     },
     {
         name: 'Colonel Custard',
-        type: 'suspect'
+        type: 'suspect',
     },
     {
         name: 'Professor Plump',
-        type: 'suspect'
+        type: 'suspect',
     },
     {
         name: 'Mr Vegan',
-        type: 'suspect'
-    }
+        type: 'suspect',
+    },
 ]
 
 export const weaponDeck: Array<Card> = [
     {
         name: 'Wrench',
-        type: 'weapon'
+        type: 'weapon',
     },
     {
         name: 'Candlestick',
-        type: 'weapon'
+        type: 'weapon',
     },
     {
         name: 'Lead Pipe',
-        type: 'weapon'
+        type: 'weapon',
     },
     {
         name: 'Rope',
-        type: 'weapon'
+        type: 'weapon',
     },
     {
         name: 'Revolver',
-        type: 'weapon'
+        type: 'weapon',
     },
     {
         name: 'Knife',
-        type: 'weapon'
-    }
+        type: 'weapon',
+    },
 ]
 
 export const removeItemFromArray = (arr: Array<any>, item: any) => {

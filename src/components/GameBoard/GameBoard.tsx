@@ -6,12 +6,12 @@ import { removeItemFromArray } from '../../utils'
 // TODO proper typing
 export default class GameBoard extends React.Component<any, any> {
     onClick(id: number) {
-        const { playerPosition, rooms, dice } = this.props.G
+        const { players, rooms, dice } = this.props.G
         const { currentPlayer } = this.props.ctx
 
         // check if dice has been rolled and if move is legal
         if (dice) {
-            const currentPlayerPos = playerPosition[currentPlayer].pos
+            const currentPlayerPos = players[currentPlayer].pos
 
             // a move is legal if it's up, down, left, or right from the player
             // cannot enter a room if it's not at the door
@@ -34,15 +34,15 @@ export default class GameBoard extends React.Component<any, any> {
 
             // update player position
             if (legalMoves.includes(id)) {
-                this.props.moves.movePlayer(id)
+                this.props.moves.MovePlayer(id)
             }
         }
     }
 
     render() {
-        const { playerPosition, cells, rooms, dice } = this.props.G
-        const { currentPlayer } = this.props.ctx
-
+        const { players, cells, rooms, dice, movesLeft } = this.props.G
+        const { currentPlayer, activePlayers } = this.props.ctx
+        console.log(activePlayers)
         // game board
         let tbody = []
         let roomCells = [] // store cells that are being merged (for rooms) and won't be pushed as a single cell
@@ -53,7 +53,7 @@ export default class GameBoard extends React.Component<any, any> {
                 const id = 18 * i + j
                 let skip = false
 
-                for (let player of playerPosition) {
+                for (let player of players) {
                     if (id === player.pos) {
                         tCells.push(
                             <td
@@ -119,16 +119,25 @@ export default class GameBoard extends React.Component<any, any> {
                 <div className="control">
                     <p className="control__text">
                         Player {currentPlayer},{' '}
-                        {dice
-                            ? `you've rolled ${dice}`
-                            : `please roll the dice`}
+                        {activePlayers[currentPlayer] === 'draw'
+                            ? 'please draw'
+                            : !dice
+                            ? 'please roll dice'
+                            : `rolled ${dice}, moves left ${movesLeft}`}
                     </p>
+                    <input
+                        type="button"
+                        value="Draw Card"
+                        className="control__button"
+                        disabled={activePlayers[currentPlayer] !== 'draw'}
+                        onClick={() => this.props.moves.DrawCard()}
+                    />
                     <input
                         type="button"
                         value="Roll Dice"
                         className="control__button"
-                        disabled={dice ? true : false}
-                        onClick={() => this.props.moves.rollDice()}
+                        disabled={activePlayers[currentPlayer] !== 'roll'}
+                        onClick={() => this.props.moves.RollDice()}
                     />
                 </div>
                 <table id="board">
