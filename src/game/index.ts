@@ -1,56 +1,48 @@
-import { roomRange } from '../utils'
-import type { RoomRange } from '../utils'
+import { rooms, playerPosition, roomDeck, suspectDeck, weaponDeck, removeItemFromArray } from '../utils'
 
-interface Rooms {
-    [key: string]: RoomRange
-}
+export const NoClue = {    
+    setup: (ctx: any) => {
+        let deck = roomDeck.concat(suspectDeck).concat(weaponDeck)
+        deck = ctx.random.Shuffle(deck)
 
-const rooms: Rooms = {
-    kitchen: roomRange(0, 3, 5),
-    ballroom: roomRange(7, 4, 4),
-    conservatory: roomRange(14, 4, 4),
-    billiardRoom: roomRange(104, 3, 4),
-    diningRoom: roomRange(108, 3, 5),
-    noclue: roomRange(115, 5, 5),
-    library: roomRange(194, 3, 4),
-    hall: roomRange(241, 5, 5),
-    lounge: roomRange(252, 4, 5),
-    study: roomRange(284, 3, 4),
-}
+        let caseFile = {
+            room: '',
+            suspect: '',
+            weapon: ''
+        }
 
-export const NoClue = {
-    setup: () => ({
-        cells: Array(324).fill(null),
-        playerPosition: {
-            0: {
-                pos: 311,
-                color: 'red',
-            },
-            1: {
-                pos: 216,
-                color: 'gold',
-            },
-            2: {
-                pos: 6,
-                color: 'white',
-            },
-            3: {
-                pos: 11,
-                color: 'dodgerblue',
-            },
-            4: {
-                pos: 179,
-                color: 'forestgreen',
-            },
-            5: {
-                pos: 251,
-                color: 'plum',
-            },
-        },
-        rooms,
-    }),
+        for (let card of deck) {
+            if (!caseFile.room && card.type === 'room') {
+                caseFile.room = card.name
+                removeItemFromArray(deck, card)
+            }
+            
+            if (!caseFile.suspect && card.type === 'suspect') {
+                caseFile.suspect = card.name
+                removeItemFromArray(deck, card)
+            } 
+
+            if (!caseFile.weapon && card.type === 'weapon') {
+                caseFile.weapon = card.name
+                removeItemFromArray(deck, card)
+            } 
+        }
+
+        const initialState = {
+            caseFile,        
+            deck,
+            playerPosition,
+            rooms,
+            cells: Array(324).fill(null),
+        }
+
+        return initialState
+    },
 
     moves: {
+        drawCard: (G: any, ctx: any) => {
+
+        },
         rollDice: (G: any, ctx: any) => {
             const dice = ctx.random.D6()
             const movesLeft = dice

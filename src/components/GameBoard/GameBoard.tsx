@@ -1,13 +1,15 @@
 import React from 'react'
 import './GameBoard.scss'
 
-// TODO Proper typing
+import { removeItemFromArray } from '../../utils'
+
+// TODO proper typing
 export default class GameBoard extends React.Component<any, any> {
     onClick(id: number) {
         const { playerPosition, rooms, dice } = this.props.G
         const { currentPlayer } = this.props.ctx
 
-        // Check if dice has been rolled and if move is legal
+        // check if dice has been rolled and if move is legal
         if (dice) {
             const currentPlayerPos = playerPosition[currentPlayer].pos
 
@@ -22,13 +24,10 @@ export default class GameBoard extends React.Component<any, any> {
 
             // TODO if player is at room door then this check is nullified
             // check if there are moves within the room range and remove them
-            for (let key in rooms) {
-                if (rooms.hasOwnProperty(key)) {
-                    for (let move of legalMoves) {
-                        if (rooms[key].range.includes(move)) {
-                            let index = legalMoves.indexOf(move)
-                            legalMoves.splice(index, 1)
-                        }
+            for (let room of rooms) {
+                for (let move of legalMoves) {
+                    if (room.roomRange.range.includes(move)) {
+                        removeItemFromArray(legalMoves, move)
                     }
                 }
             }
@@ -44,9 +43,9 @@ export default class GameBoard extends React.Component<any, any> {
         const { playerPosition, cells, rooms, dice } = this.props.G
         const { currentPlayer } = this.props.ctx
 
-        // Game Board
+        // game board
         let tbody = []
-        let roomCells = [] // Store cells that are being merged (for rooms) and won't be pushed as a single cell
+        let roomCells = [] // store cells that are being merged (for rooms) and won't be pushed as a single cell
 
         for (let i = 0; i < 18; i++) {
             let tCells = []
@@ -54,58 +53,52 @@ export default class GameBoard extends React.Component<any, any> {
                 const id = 18 * i + j
                 let skip = false
 
-                for (let key in playerPosition) {
-                    if (playerPosition.hasOwnProperty(key)) {
-                        if (id === playerPosition[key].pos) {
-                            tCells.push(
-                                <td
-                                    className="cell"
-                                    key={id}
-                                    onClick={() => this.onClick(id)}
+                for (let player of playerPosition) {
+                    if (id === player.pos) {
+                        tCells.push(
+                            <td
+                                className="cell"
+                                key={id}
+                                onClick={() => this.onClick(id)}
+                            >
+                                <span
+                                    style={{
+                                        color: player.color,
+                                    }}
+                                    className="player"
                                 >
-                                    <span
-                                        style={{
-                                            color: playerPosition[key].color,
-                                        }}
-                                        className="player"
-                                    >
-                                        P
-                                    </span>
-                                </td>
-                            )
-                            skip = true
-                            break
+                                    P
+                                </span>
+                            </td>
+                        )
+                        skip = true
+                        break
+                    }
+                }
+
+                if (skip) continue
+
+                // draw rooms
+                for (let room of rooms) {
+                    if (id === room.roomRange.startRange) {
+                        tCells.push(
+                            <td
+                                rowSpan={room.roomRange.height}
+                                colSpan={room.roomRange.width}
+                                className="cell"
+                                key={id}
+                                onClick={() => this.onClick(id)}
+                            >
+                                {room.name}
+                            </td>
+                        )
+                        for (let range of room.roomRange.range) {
+                            roomCells.push(range)
                         }
                     }
                 }
 
-                if (skip) {
-                    continue
-                }
-
-                // Draw rooms
-                for (let key in rooms) {
-                    if (rooms.hasOwnProperty(key)) {
-                        if (id === rooms[key].startRange) {
-                            tCells.push(
-                                <td
-                                    rowSpan={rooms[key].height}
-                                    colSpan={rooms[key].width}
-                                    className="cell"
-                                    key={id}
-                                    onClick={() => this.onClick(id)}
-                                >
-                                    {key.toUpperCase()}
-                                </td>
-                            )
-                            for (let range of rooms[key].range) {
-                                roomCells.push(range)
-                            }
-                        }
-                    }
-                }
-
-                // Don't draw cells that were merged for the rooms
+                // don't draw cells that were merged for the rooms
                 if (!roomCells.includes(id)) {
                     tCells.push(
                         <td
