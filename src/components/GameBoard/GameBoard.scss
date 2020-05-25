@@ -1,11 +1,50 @@
+// VARIABLES
+$color-primary: #3c3352;
+$color-secondary: #359768;
+$color-tertiary: #a7d46f;
+
+$color-grey-light: #ddd;
+$color-grey-dark: #333;
+$color-black: #000;
+
+// BASE
+* {
+    margin: 0;
+    padding: 0; 
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: inherit; 
+}
+
+html {
+    box-sizing: border-box;
+    font-size: 62.5%; // 1rem = 10px
+}
+
+body {
+    font-family: 'Libre Baskerville', serif;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+// GAME COMPONENTS
+table {
+    padding: 1rem 1rem;
+    width: 75%;
+}
+
 .cell {
-    border: 1px solid #4a2c2c;
-    width: 50px;
-    height: 50px;
+    border: 1px solid $color-grey-light;
+    width: 5rem;
+    height: 5rem;
     text-align: center;
-    line-height: 50px;
+    // line-height: 5rem;
+    font-size: 1.6rem;
     color: white;
-    background-color: #773838;
+    background-color: $color-primary;
 }
 
 .player {
@@ -13,5 +52,89 @@
 }
 
 .control {
-    padding: .5rem .5rem 1rem .5rem;
+    padding: 2rem 1rem;
+    width: 75%;
+    font-size: 1.4rem;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    &__text {
+        margin-left: 2rem;
+        flex: 0 0 10%;
+        text-align: center;
+        font-weight: 700;
+    }
+
+    &__btn-box {
+        margin-left: 2rem;
+        display: flex;
+        flex: 0 0 10%;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+    }
+
+    &__btn {
+        &,
+        &:link,
+        &:visited {
+            font-family: inherit;
+            font-size: 1rem;
+
+            text-transform: uppercase;
+            text-decoration: none;
+            padding: 1rem 2rem;
+            border-radius: 1rem;
+
+            border: 1px solid $color-grey-light;
+            cursor: pointer;
+
+            transition: all .2s;
+        }
+
+        &:not(:last-child) {
+            margin-bottom: .8rem;
+        }
+
+        &:hover:not([disabled]) {
+            color: $color-secondary;
+            border: 1px solid $color-tertiary;
+            box-shadow: 0 .3rem .5rem rgba($color-black, .2);
+        }
+    
+        &:active,
+        &:focus {
+            outline: none;
+            transform: translateY(2px);
+        }
+    }
+
+    &__card-box {
+        margin-left: 2rem;
+        flex: 1;
+
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+    }
+
+    &__card {
+        padding: .6rem;
+        border: 1px solid $color-grey-dark;
+        width: fit-content;
+        height: 8rem;
+        text-align: center;
+        margin-right: 1rem;
+
+        font-weight: 700;
+        font-size: 1.2rem;
+
+        &--type {
+            text-transform: uppercase;
+            font-size: 1rem;
+            font-weight: 400;
+        }
+    }
 }

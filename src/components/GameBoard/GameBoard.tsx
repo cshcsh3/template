@@ -23,10 +23,17 @@ export default class GameBoard extends React.Component<any, any> {
             ]
 
             // TODO if player is at room door then this check is nullified
-            // check if there are moves within the room range and remove them
-            for (let room of rooms) {
-                for (let move of legalMoves) {
+            for (let move of legalMoves) {
+                // check if there are moves within the room range and remove them
+                for (let room of rooms) {
                     if (room.roomRange.range.includes(move)) {
+                        removeItemFromArray(legalMoves, move)
+                    }
+                }
+
+                // check if there are players standing at the cell
+                for (let player of players) {
+                    if (player.pos === move) {
                         removeItemFromArray(legalMoves, move)
                     }
                 }
@@ -42,7 +49,7 @@ export default class GameBoard extends React.Component<any, any> {
     render() {
         const { players, cells, rooms, dice, movesLeft } = this.props.G
         const { currentPlayer, activePlayers } = this.props.ctx
-        console.log(activePlayers)
+
         // game board
         let tbody = []
         let roomCells = [] // store cells that are being merged (for rooms) and won't be pushed as a single cell
@@ -114,6 +121,16 @@ export default class GameBoard extends React.Component<any, any> {
             tbody.push(<tr key={i}>{tCells}</tr>)
         }
 
+        let cards = []
+        for (let card of players[currentPlayer].hand) {
+            cards.push(
+                <div key={card.name} className="control__card">
+                    <p className="control__card--name">{card.name}</p>
+                    <p className="control__card--type">{card.type}</p>
+                </div>
+            )
+        }
+
         return (
             <div>
                 <div className="control">
@@ -125,20 +142,25 @@ export default class GameBoard extends React.Component<any, any> {
                             ? 'please roll dice'
                             : `rolled ${dice}, moves left ${movesLeft}`}
                     </p>
-                    <input
-                        type="button"
-                        value="Draw Card"
-                        className="control__button"
-                        disabled={activePlayers[currentPlayer] !== 'draw'}
-                        onClick={() => this.props.moves.DrawCard()}
-                    />
-                    <input
-                        type="button"
-                        value="Roll Dice"
-                        className="control__button"
-                        disabled={activePlayers[currentPlayer] !== 'roll'}
-                        onClick={() => this.props.moves.RollDice()}
-                    />
+
+                    <div className="control__btn-box">
+                        <input
+                            type="button"
+                            value="Draw Card"
+                            className="control__btn"
+                            disabled={activePlayers[currentPlayer] !== 'draw'}
+                            onClick={() => this.props.moves.DrawCard()}
+                        />
+                        <input
+                            type="button"
+                            value="Roll Dice"
+                            className="control__btn"
+                            disabled={activePlayers[currentPlayer] !== 'roll'}
+                            onClick={() => this.props.moves.RollDice()}
+                        />
+                    </div>
+
+                    <div className="control__card-box">{cards}</div>
                 </div>
                 <table id="board">
                     <tbody>{tbody}</tbody>
