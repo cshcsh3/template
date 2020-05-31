@@ -5,24 +5,24 @@ type RoomRange = {
     range: Array<number>
 }
 
-type Room = {
+export type Room = {
     name: string
     roomRange: RoomRange
 }
 
-type Door = {
+export type Door = {
     pos: number
     orientation: 'top' | 'bottom' | 'left' | 'right'
 }
 
-type Players = {
-    player: number
+export type Player = {
+    id: number
     pos: number
     color: string
     hand: Array<Card>
 }
 
-type Card = {
+export type Card = {
     name: string
     type: 'room' | 'suspect' | 'weapon'
 }
@@ -152,39 +152,39 @@ export const doors: Array<Door> = [
     },
 ]
 
-export const players: Array<Players> = [
+export const players: Array<Player> = [
     {
-        player: 0,
+        id: 0,
         pos: 311,
         color: 'red',
         hand: [],
     },
     {
-        player: 1,
+        id: 1,
         pos: 216,
         color: 'gold',
         hand: [],
     },
     {
-        player: 2,
+        id: 2,
         pos: 6,
         color: 'white',
         hand: [],
     },
     {
-        player: 3,
+        id: 3,
         pos: 11,
         color: 'dodgerblue',
         hand: [],
     },
     {
-        player: 4,
+        id: 4,
         pos: 179,
         color: 'forestgreen',
         hand: [],
     },
     {
-        player: 5,
+        id: 5,
         pos: 251,
         color: 'plum',
         hand: [],

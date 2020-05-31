@@ -6,9 +6,9 @@ import { removeItemFromArray } from '../../utils'
 // TODO proper typing
 export default class GameBoard extends React.Component<any, any> {
     onClick(id: number) {
-        const { players, rooms, dice } = this.props.G
+        const { players, rooms, doors, dice } = this.props.G
         const { currentPlayer } = this.props.ctx
-
+        console.log(id)
         // check if dice has been rolled and if move is legal
         if (dice) {
             const currentPlayerPos = players[currentPlayer].pos
@@ -22,16 +22,34 @@ export default class GameBoard extends React.Component<any, any> {
                 currentPlayerPos + 18, // down
             ]
 
-            // TODO if player is at room door then this check is nullified
+            // if player is at door, put as legal move
+            let roomRangeCheck = true
+            for (let door of doors) {
+                if (currentPlayerPos === door.pos) {
+                    for (let room of rooms) {
+                        if (room.roomRange.range.includes(id)) {
+                            legalMoves.push(room.roomRange.startRange)
+                            break
+                        }
+                    }
+                    roomRangeCheck = false
+                    break
+                }
+            }
+
             for (let move of legalMoves) {
-                // check if there are moves within the room range and remove them
-                for (let room of rooms) {
-                    if (room.roomRange.range.includes(move)) {
-                        removeItemFromArray(legalMoves, move)
+                if (roomRangeCheck) {
+                    // check if there are moves within the room range and remove them
+                    // this step is not necessary if player is at the door
+                    for (let room of rooms) {
+                        if (room.roomRange.range.includes(move)) {
+                            removeItemFromArray(legalMoves, move)
+                        }
                     }
                 }
 
                 // check if there are players standing at the cell
+                // TODO currently only 1 player can enter 1 room at a time
                 for (let player of players) {
                     if (player.pos === move) {
                         removeItemFromArray(legalMoves, move)
@@ -53,19 +71,73 @@ export default class GameBoard extends React.Component<any, any> {
         // game board
         let tbody = []
         let roomCells = [] // store cells that are being merged (for rooms) and won't be pushed as a single cell
+        let playersInRoom = []
 
         for (let i = 0; i < 18; i++) {
             let tCells = []
             for (let j = 0; j < 18; j++) {
                 const id = 18 * i + j
+
+                // draw rooms
+                for (let room of rooms) {
+                    // check if there are players in the room
+                    let playerInRoom = null
+                    for (let player of players) {
+                        if (player.pos === room.roomRange.startRange) {
+                            playerInRoom = player
+                            playersInRoom.push(player.id)
+                        }
+                    }
+
+                    if (id === room.roomRange.startRange) {
+                        tCells.push(
+                            <td
+                                rowSpan={room.roomRange.height}
+                                colSpan={room.roomRange.width}
+                                className="cell"
+                                key={id}
+                                onClick={() => this.onClick(id)}
+                            >
+                                {room.name}
+                                {playerInRoom ? (
+                                    <div
+                                        style={{
+                                            color: playerInRoom.color,
+                                        }}
+                                        className="player"
+                                    >
+                                        P
+                                    </div>
+                                ) : null}
+                            </td>
+                        )
+                        for (let range of room.roomRange.range) {
+                            roomCells.push(range)
+                        }
+                    }
+                }
+
                 let drawnPlayerCell = false
 
                 // draw players
                 for (let player of players) {
-                    if (id === player.pos) {
+                    // don't draw player if they are in a room
+                    if (
+                        !playersInRoom.includes(player.id) &&
+                        id === player.pos
+                    ) {
+                        // check if player is at door, ensure player is drawn with door
+                        let cellClass = `cell`
+                        for (let door of doors) {
+                            if (door.pos === id) {
+                                cellClass = `cell cell__${door.orientation}`
+                                break
+                            }
+                        }
+
                         tCells.push(
                             <td
-                                className="cell"
+                                className={cellClass}
                                 key={id}
                                 onClick={() => this.onClick(id)}
                             >
@@ -86,26 +158,7 @@ export default class GameBoard extends React.Component<any, any> {
 
                 if (drawnPlayerCell) continue
 
-                // draw rooms
-                for (let room of rooms) {
-                    if (id === room.roomRange.startRange) {
-                        tCells.push(
-                            <td
-                                rowSpan={room.roomRange.height}
-                                colSpan={room.roomRange.width}
-                                className="cell"
-                                key={id}
-                                onClick={() => this.onClick(id)}
-                            >
-                                {room.name}
-                            </td>
-                        )
-                        for (let range of room.roomRange.range) {
-                            roomCells.push(range)
-                        }
-                    }
-                }
-
+                // draw individual cells
                 // don't draw cells that were merged for the rooms
                 if (!roomCells.includes(id)) {
                     // draw doors
