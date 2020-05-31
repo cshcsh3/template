@@ -7,6 +7,8 @@ $color-grey-light: #ddd;
 $color-grey-dark: #333;
 $color-black: #000;
 
+$border-door: .5rem solid #fff;
+
 // BASE
 * {
     margin: 0;
@@ -37,7 +39,7 @@ table {
 }
 
 .cell {
-    border: 1px solid $color-grey-light;
+    border: 2px solid $color-grey-dark;
     width: 5rem;
     height: 5rem;
     text-align: center;
@@ -45,6 +47,22 @@ table {
     font-size: 1.6rem;
     color: white;
     background-color: $color-primary;
+
+    &__top {
+        border-top: $border-door;
+    }
+
+    &__bottom {
+        border-bottom: $border-door;
+    }
+
+    &__left {
+        border-left: $border-door;
+    }
+
+    &__right {
+        border-right: $border-door;
+    }
 }
 
 .player {

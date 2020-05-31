@@ -1,5 +1,6 @@
 import {
     rooms,
+    doors,
     players,
     roomDeck,
     suspectDeck,
@@ -64,6 +65,7 @@ export const NoClue = {
             players,
             deck,
             rooms,
+            doors,
             cells: Array(324).fill(null),
         }
 

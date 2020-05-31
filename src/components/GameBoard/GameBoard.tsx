@@ -47,7 +47,7 @@ export default class GameBoard extends React.Component<any, any> {
     }
 
     render() {
-        const { players, cells, rooms, dice, movesLeft } = this.props.G
+        const { players, cells, rooms, doors, dice, movesLeft } = this.props.G
         const { currentPlayer, activePlayers } = this.props.ctx
 
         // game board
@@ -58,8 +58,9 @@ export default class GameBoard extends React.Component<any, any> {
             let tCells = []
             for (let j = 0; j < 18; j++) {
                 const id = 18 * i + j
-                let skip = false
+                let drawnPlayerCell = false
 
+                // draw players
                 for (let player of players) {
                     if (id === player.pos) {
                         tCells.push(
@@ -78,12 +79,12 @@ export default class GameBoard extends React.Component<any, any> {
                                 </span>
                             </td>
                         )
-                        skip = true
+                        drawnPlayerCell = true
                         break
                     }
                 }
 
-                if (skip) continue
+                if (drawnPlayerCell) continue
 
                 // draw rooms
                 for (let room of rooms) {
@@ -107,6 +108,27 @@ export default class GameBoard extends React.Component<any, any> {
 
                 // don't draw cells that were merged for the rooms
                 if (!roomCells.includes(id)) {
+                    // draw doors
+                    let drawnDoorCell = false
+                    for (let door of doors) {
+                        if (door.pos === id) {
+                            const cellClass = `cell cell__${door.orientation}`
+                            tCells.push(
+                                <td
+                                    className={cellClass}
+                                    key={id}
+                                    onClick={() => this.onClick(id)}
+                                >
+                                    {cells[id]}
+                                </td>
+                            )
+                            drawnDoorCell = true
+                            break
+                        }
+                    }
+
+                    if (drawnDoorCell) continue
+
                     tCells.push(
                         <td
                             className="cell"
@@ -118,6 +140,7 @@ export default class GameBoard extends React.Component<any, any> {
                     )
                 }
             }
+
             tbody.push(<tr key={i}>{tCells}</tr>)
         }
 

@@ -9,7 +9,11 @@ type Room = {
     name: string
     roomRange: RoomRange
 }
-type Rooms = Array<Room>
+
+type Door = {
+    pos: number
+    orientation: 'top' | 'bottom' | 'left' | 'right'
+}
 
 type Players = {
     player: number
@@ -46,7 +50,7 @@ const roomRange = (
     }
 }
 
-export const rooms: Rooms = [
+export const rooms: Array<Room> = [
     {
         name: 'Kitchen',
         roomRange: roomRange(0, 3, 5),
@@ -65,7 +69,7 @@ export const rooms: Rooms = [
     },
     {
         name: 'Dining Room',
-        roomRange: roomRange(108, 3, 5),
+        roomRange: roomRange(108, 5, 5),
     },
     {
         name: 'No Clue',
@@ -86,6 +90,65 @@ export const rooms: Rooms = [
     {
         name: 'Study',
         roomRange: roomRange(284, 3, 4),
+    },
+]
+
+export const doors: Array<Door> = [
+    {
+        pos: 201,
+        orientation: 'top',
+    },
+    {
+        pos: 238,
+        orientation: 'bottom',
+    },
+    {
+        pos: 131,
+        orientation: 'left',
+    },
+    {
+        pos: 57,
+        orientation: 'top',
+    },
+    {
+        pos: 79,
+        orientation: 'top',
+    },
+    {
+        pos: 82,
+        orientation: 'top',
+    },
+    {
+        pos: 67,
+        orientation: 'right',
+    },
+    {
+        pos: 103,
+        orientation: 'right',
+    },
+    {
+        pos: 158,
+        orientation: 'top',
+    },
+    {
+        pos: 211,
+        orientation: 'right',
+    },
+    {
+        pos: 177,
+        orientation: 'bottom',
+    },
+    {
+        pos: 266,
+        orientation: 'bottom',
+    },
+    {
+        pos: 225,
+        orientation: 'bottom',
+    },
+    {
+        pos: 264,
+        orientation: 'left',
     },
 ]
 
