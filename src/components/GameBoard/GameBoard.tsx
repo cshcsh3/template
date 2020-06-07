@@ -1,21 +1,52 @@
 import React from 'react'
 import './GameBoard.scss'
 
-import { removeItemFromArray } from '../../utils'
+import { removeItemFromArray } from '../../game/utils'
+
+import type { Room } from '../../game/types'
 
 // TODO proper typing
 export default class GameBoard extends React.Component<any, any> {
+    playerInRoom(currentPlayerPos: number): boolean {
+        const { rooms } = this.props.G
+        for (const room of rooms) {
+            if (room.roomRange.startRange === currentPlayerPos) return true
+        }
+        return false
+    }
+
+    playerAtDoor(currentPlayerPos: number): boolean {
+        const { rooms } = this.props.G
+        const doors = rooms.flatMap(
+            (room: Room) => room.doors !== undefined && room.doors
+        )
+        for (const door of doors) {
+            if (door.pos === currentPlayerPos) return true
+        }
+        return false
+    }
+
     onClick(id: number) {
-        const { players, rooms, doors, dice } = this.props.G
+        const { players, rooms, dice } = this.props.G
         const { currentPlayer } = this.props.ctx
-        console.log(id)
+
         // check if dice has been rolled and if move is legal
         if (dice) {
             const currentPlayerPos = players[currentPlayer].pos
+            let legalMoves = []
+
+            // if player is in room
+            if (this.playerInRoom(currentPlayerPos)) {
+                /**
+                 * 1a. Make suggestion
+                 * 1b. Make accusation
+                 * 2. If already made suggestion, legal moves will be door or corner rooms
+                 */
+            }
 
             // a move is legal if it's up, down, left, or right from the player
             // cannot enter a room if it's not at the door
-            let legalMoves = [
+            legalMoves = [
                 currentPlayerPos - 1, // left
                 currentPlayerPos + 1, // right
                 currentPlayerPos - 18, // up
@@ -23,22 +54,17 @@ export default class GameBoard extends React.Component<any, any> {
             ]
 
             // if player is at door, put as legal move
-            let roomRangeCheck = true
-            for (let door of doors) {
-                if (currentPlayerPos === door.pos) {
-                    for (let room of rooms) {
-                        if (room.roomRange.range.includes(id)) {
-                            legalMoves.push(room.roomRange.startRange)
-                            break
-                        }
+            if (this.playerAtDoor(currentPlayerPos)) {
+                for (let room of rooms) {
+                    if (room.roomRange.range.includes(id)) {
+                        legalMoves.push(room.roomRange.startRange)
+                        break
                     }
-                    roomRangeCheck = false
-                    break
                 }
             }
 
             for (let move of legalMoves) {
-                if (roomRangeCheck) {
+                if (!this.playerAtDoor(currentPlayerPos)) {
                     // check if there are moves within the room range and remove them
                     // this step is not necessary if player is at the door
                     for (let room of rooms) {
@@ -49,7 +75,7 @@ export default class GameBoard extends React.Component<any, any> {
                 }
 
                 // check if there are players standing at the cell
-                // TODO currently only 1 player can enter 1 room at a time
+                // currently only 1 player can enter 1 room at a time
                 for (let player of players) {
                     if (player.pos === move) {
                         removeItemFromArray(legalMoves, move)
@@ -65,8 +91,12 @@ export default class GameBoard extends React.Component<any, any> {
     }
 
     render() {
-        const { players, cells, rooms, doors, dice, movesLeft } = this.props.G
+        const { players, cells, rooms, dice, movesLeft } = this.props.G
         const { currentPlayer, activePlayers } = this.props.ctx
+
+        const doors = rooms.flatMap(
+            (room: Room) => room.doors !== undefined && room.doors
+        )
 
         // game board
         let tbody = []

@@ -8,6 +8,7 @@ type RoomRange = {
 export type Room = {
     name: string
     roomRange: RoomRange
+    doors?: Array<Door>
 }
 
 export type Door = {
@@ -54,22 +55,64 @@ export const rooms: Array<Room> = [
     {
         name: 'Kitchen',
         roomRange: roomRange(0, 3, 5),
+        doors: [
+            {
+                pos: 57,
+                orientation: 'top',
+            },
+        ],
     },
     {
         name: 'Ballroom',
         roomRange: roomRange(7, 4, 4),
+        doors: [
+            {
+                pos: 79,
+                orientation: 'top',
+            },
+            {
+                pos: 82,
+                orientation: 'top',
+            },
+        ],
     },
     {
         name: 'Conservatory',
         roomRange: roomRange(14, 4, 4),
+        doors: [
+            {
+                pos: 67,
+                orientation: 'right',
+            },
+        ],
     },
     {
         name: 'Billiard Room',
         roomRange: roomRange(104, 3, 4),
+        doors: [
+            {
+                pos: 103,
+                orientation: 'right',
+            },
+            {
+                pos: 158,
+                orientation: 'top',
+            },
+        ],
     },
     {
         name: 'Dining Room',
         roomRange: roomRange(108, 5, 5),
+        doors: [
+            {
+                pos: 131,
+                orientation: 'left',
+            },
+            {
+                pos: 201,
+                orientation: 'top',
+            },
+        ],
     },
     {
         name: 'No Clue',
@@ -78,77 +121,50 @@ export const rooms: Array<Room> = [
     {
         name: 'Library',
         roomRange: roomRange(194, 3, 4),
+        doors: [
+            {
+                pos: 177,
+                orientation: 'bottom',
+            },
+            {
+                pos: 211,
+                orientation: 'right',
+            },
+        ],
     },
     {
         name: 'Hall',
         roomRange: roomRange(241, 5, 5),
+        doors: [
+            {
+                pos: 225,
+                orientation: 'bottom',
+            },
+            {
+                pos: 264,
+                orientation: 'left',
+            },
+        ],
     },
     {
         name: 'Lounge',
         roomRange: roomRange(252, 4, 5),
+        doors: [
+            {
+                pos: 238,
+                orientation: 'bottom',
+            },
+        ],
     },
     {
         name: 'Study',
         roomRange: roomRange(284, 3, 4),
-    },
-]
-
-export const doors: Array<Door> = [
-    {
-        pos: 201,
-        orientation: 'top',
-    },
-    {
-        pos: 238,
-        orientation: 'bottom',
-    },
-    {
-        pos: 131,
-        orientation: 'left',
-    },
-    {
-        pos: 57,
-        orientation: 'top',
-    },
-    {
-        pos: 79,
-        orientation: 'top',
-    },
-    {
-        pos: 82,
-        orientation: 'top',
-    },
-    {
-        pos: 67,
-        orientation: 'right',
-    },
-    {
-        pos: 103,
-        orientation: 'right',
-    },
-    {
-        pos: 158,
-        orientation: 'top',
-    },
-    {
-        pos: 211,
-        orientation: 'right',
-    },
-    {
-        pos: 177,
-        orientation: 'bottom',
-    },
-    {
-        pos: 266,
-        orientation: 'bottom',
-    },
-    {
-        pos: 225,
-        orientation: 'bottom',
-    },
-    {
-        pos: 264,
-        orientation: 'left',
+        doors: [
+            {
+                pos: 266,
+                orientation: 'bottom',
+            },
+        ],
     },
 ]
 
@@ -283,8 +299,3 @@ export const weaponDeck: Array<Card> = [
         type: 'weapon',
     },
 ]
-
-export const removeItemFromArray = (arr: Array<any>, item: any) => {
-    let index = arr.indexOf(item)
-    arr.splice(index, 1)
-}

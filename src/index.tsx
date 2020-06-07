@@ -8,7 +8,7 @@ import { Client } from 'boardgame.io/react'
 
 const App = Client({
     game: NoClue,
-    numPlayers: 1,
+    numPlayers: 6,
     board: GameBoard,
 })
 

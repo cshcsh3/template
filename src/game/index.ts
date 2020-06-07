@@ -1,14 +1,6 @@
-import {
-    rooms,
-    doors,
-    players,
-    roomDeck,
-    suspectDeck,
-    weaponDeck,
-    removeItemFromArray,
-} from '../utils'
+import { rooms, players, roomDeck, suspectDeck, weaponDeck } from './types'
 
-import type { Player, Card, Room, Door } from '../utils'
+import { removeItemFromArray } from './utils'
 
 type CaseFile = {
     room: string
@@ -74,7 +66,6 @@ export const NoClue = {
             players,
             deck,
             rooms,
-            doors,
             cells: Array(324).fill(null),
         }
 
