@@ -33,9 +33,17 @@ body {
 }
 
 // GAME COMPONENTS
+.container {
+    display: grid;
+    grid-template-rows: auto;
+    grid-template-columns: [control-start] max-content [control-end board-start] max-content [board-end];
+}
+
 table {
+    grid-column: board-start / board-end;
+
     padding: 1rem 1rem;
-    width: 75%;
+    width: max-content;
 }
 
 .cell {
@@ -43,7 +51,6 @@ table {
     width: 5rem;
     height: 5rem;
     text-align: center;
-    // line-height: 5rem;
     font-size: 1.6rem;
     color: white;
     background-color: $color-primary;
@@ -70,28 +77,25 @@ table {
 }
 
 .control {
-    padding: 2rem 1rem;
-    width: 75%;
+    grid-column: control-start / control-end;
+
+    padding: 2rem;
     font-size: 1.4rem;
 
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    display: grid;
+    grid-template-rows: repeat(2, min-content) 1fr;
+    justify-self: center;
+    row-gap: 2rem;
 
     &__text {
-        margin-left: 2rem;
-        flex: 0 0 10%;
         text-align: center;
         font-weight: 700;
+        width: 15em;
     }
 
     &__btn-box {
-        margin-left: 2rem;
-        display: flex;
-        flex: 0 0 10%;
-        flex-wrap: wrap;
+        display: grid;
         justify-content: center;
-        align-items: center;
     }
 
     &__btn {
@@ -131,12 +135,12 @@ table {
     }
 
     &__card-box {
-        margin-left: 2rem;
-        flex: 1;
-
-        display: flex;
-        justify-content: flex-start;
-        align-items: center;
+        display: grid;
+        grid-auto-rows: min-content;
+        grid-template-columns: repeat(2, min-content);
+        row-gap: 1rem;
+        column-gap: 1rem;
+        justify-content: center;
     }
 
     &__card {

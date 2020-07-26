@@ -238,7 +238,7 @@ export default class GameBoard extends React.Component<any, any> {
         }
 
         return (
-            <div>
+            <div className="container">
                 <div className="control">
                     <p className="control__text">
                         Player {currentPlayer},{' '}

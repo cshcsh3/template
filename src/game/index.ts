@@ -34,14 +34,14 @@ const MovePlayer = (G: any, ctx: any, id: number) => {
 
 export const NoClue = {
     setup: (ctx: any) => {
-        let deck = roomDeck.concat(suspectDeck).concat(weaponDeck)
-        deck = ctx.random.Shuffle(deck)
-
         let caseFile: CaseFile = {
             room: '',
             suspect: '',
             weapon: '',
         }
+
+        let deck = roomDeck.concat(suspectDeck).concat(weaponDeck)
+        deck = ctx.random.Shuffle(deck)
 
         for (let card of deck) {
             if (!caseFile.room && card.type === 'room') {
@@ -60,7 +60,7 @@ export const NoClue = {
             }
         }
 
-        // TODO proper typing?
+        // TODO proper typing
         const initialState = {
             caseFile,
             players,
