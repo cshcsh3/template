@@ -7,6 +7,27 @@ import type { Room } from '../../game/types'
 
 // TODO proper typing
 export default class GameBoard extends React.Component<any, any> {
+    showText(
+        stage: string,
+        player: number,
+        dice: number,
+        movesLeft: number
+    ): string {
+        if (stage === 'draw') {
+            return `Player ${player}, please draw`
+        }
+        if (stage === 'roll') {
+            return `Player ${player}, please roll dice`
+        }
+        if (stage === 'move') {
+            return `Player ${player}, rolled ${dice}, moves left ${movesLeft}`
+        }
+        if (stage === 'suggest') {
+            return `Player ${player} is suggesting...`
+        }
+        return 'Welp!'
+    }
+
     playerInRoom(currentPlayerPos: number): boolean {
         const { rooms } = this.props.G
         for (const room of rooms) {
@@ -35,13 +56,16 @@ export default class GameBoard extends React.Component<any, any> {
             const currentPlayerPos = players[currentPlayer].pos
             let legalMoves = []
 
-            // if player is in room
+            /**
+             * Scenarios in which player can be in the room:
+             * 1. They roll the dice then enter a room with remaining dice rolls
+             *      a. They can only make a suggestion or an accusation next
+             * 2. They are already in a room from the previous turn
+             *      a. Assume that they've already made a suggestion, the only legal moves will be door or corner rooms
+             *      b. If they move to the door, the only legal moves for the remaining turn will be everywhere but the room they just left
+             */
+            // TODO Case 2a.
             if (this.playerInRoom(currentPlayerPos)) {
-                /**
-                 * 1a. Make suggestion
-                 * 1b. Make accusation
-                 * 2. If already made suggestion, legal moves will be door or corner rooms
-                 */
             }
 
             // a move is legal if it's up, down, left, or right from the player
@@ -85,7 +109,8 @@ export default class GameBoard extends React.Component<any, any> {
 
             // update player position
             if (legalMoves.includes(id)) {
-                this.props.moves.MovePlayer(id)
+                // Case 1a.
+                this.props.moves.MovePlayer(id, this.playerInRoom(id))
             }
         }
     }
@@ -241,12 +266,12 @@ export default class GameBoard extends React.Component<any, any> {
             <div className="container">
                 <div className="control">
                     <p className="control__text">
-                        Player {currentPlayer},{' '}
-                        {activePlayers[currentPlayer] === 'draw'
-                            ? 'please draw'
-                            : !dice
-                            ? 'please roll dice'
-                            : `rolled ${dice}, moves left ${movesLeft}`}
+                        {this.showText(
+                            activePlayers[currentPlayer],
+                            currentPlayer,
+                            dice,
+                            movesLeft
+                        )}
                     </p>
 
                     <div className="control__btn-box">

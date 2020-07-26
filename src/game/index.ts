@@ -23,13 +23,19 @@ const RollDice = (G: any, ctx: any) => {
     ctx.events.endStage()
 }
 
-const MovePlayer = (G: any, ctx: any, id: number) => {
+const MovePlayer = (G: any, ctx: any, id: number, inRoom: boolean) => {
     G.players[ctx.currentPlayer].pos = id
     if (G.movesLeft) G.movesLeft--
-    if (G.movesLeft === 0) {
-        G.dice = null
+    if (inRoom) {
+        ctx.events.setStage('suggest')
+    } else if (G.movesLeft === 0) {
+        G.dice = 0
         ctx.events.endTurn()
     }
+}
+
+const MakeSuggestion = (G: any, ctx: any) => {
+    // TODO Make suggestion
 }
 
 export const NoClue = {
@@ -88,6 +94,9 @@ export const NoClue = {
             },
             move: {
                 moves: { MovePlayer },
+            },
+            suggest: {
+                moves: { MakeSuggestion },
             },
         },
     },
