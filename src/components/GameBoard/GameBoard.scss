@@ -83,14 +83,15 @@ table {
     font-size: 1.4rem;
 
     display: grid;
-    grid-template-rows: repeat(2, min-content) 1fr;
+    grid-template-rows: repeat(3, min-content) 1fr;
     justify-self: center;
     row-gap: 2rem;
 
     &__text {
         text-align: center;
         font-weight: 700;
-        width: 15em;
+        width: 18em;
+        border-bottom: 1px solid $color-grey-light;
     }
 
     &__btn-box {
@@ -134,6 +135,18 @@ table {
         }
     }
 
+    &__heading {
+        font-weight: bold;
+        border-bottom: 1px solid $color-grey-light;
+        text-align: center;
+        margin-bottom: 1rem;
+    }
+
+    &__subheading {
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+    }
+
     &__card-box {
         display: grid;
         grid-auto-rows: min-content;
@@ -159,5 +172,14 @@ table {
             font-size: 1rem;
             font-weight: 400;
         }
+    }
+
+    &__suggest-select {
+        display: grid;
+        margin-bottom: 1rem;
+    }
+
+    input[type="radio"] {
+        margin-right: 1rem;
     }
 }

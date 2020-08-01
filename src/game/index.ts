@@ -34,8 +34,18 @@ const MovePlayer = (G: any, ctx: any, id: number, inRoom: boolean) => {
     }
 }
 
-const MakeSuggestion = (G: any, ctx: any) => {
-    // TODO Make suggestion
+const MakeSuggestion = (G: any, ctx: any, suggest: boolean) => {
+    if (suggest) {
+        // TODO Make suggestion
+    }
+    ctx.events.setStage('accuse')
+}
+
+const MakeAccusation = (G: any, ctx: any, accuse: boolean) => {
+    if (accuse) {
+        // TODO Make accusation
+    }
+    ctx.events.endTurn()
 }
 
 export const NoClue = {
@@ -72,6 +82,9 @@ export const NoClue = {
             players,
             deck,
             rooms,
+            roomDeck,
+            suspectDeck,
+            weaponDeck,
             cells: Array(324).fill(null),
         }
 
@@ -97,6 +110,9 @@ export const NoClue = {
             },
             suggest: {
                 moves: { MakeSuggestion },
+            },
+            accuse: {
+                moves: { MakeAccusation },
             },
         },
     },

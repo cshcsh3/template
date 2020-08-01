@@ -1,9 +1,9 @@
 import React from 'react'
 import './GameBoard.scss'
 
-import { removeItemFromArray } from '../../game/utils'
+import { removeItemFromArray, capitalize } from '../../game/utils'
 
-import type { Room } from '../../game/types'
+import type { Room, Card } from '../../game/types'
 
 // TODO proper typing
 export default class GameBoard extends React.Component<any, any> {
@@ -24,6 +24,9 @@ export default class GameBoard extends React.Component<any, any> {
         }
         if (stage === 'suggest') {
             return `Player ${player} is suggesting...`
+        }
+        if (stage === 'accuse') {
+            return `Player ${player} is accusing...`
         }
         return 'Welp!'
     }
@@ -116,7 +119,16 @@ export default class GameBoard extends React.Component<any, any> {
     }
 
     render() {
-        const { players, cells, rooms, dice, movesLeft } = this.props.G
+        const {
+            players,
+            cells,
+            rooms,
+            dice,
+            movesLeft,
+            roomDeck,
+            weaponDeck,
+            suspectDeck,
+        } = this.props.G
         const { currentPlayer, activePlayers } = this.props.ctx
 
         const doors = rooms.flatMap(
@@ -182,7 +194,7 @@ export default class GameBoard extends React.Component<any, any> {
                         id === player.pos
                     ) {
                         // check if player is at door, ensure player is drawn with door
-                        let cellClass = `cell`
+                        let cellClass = 'cell'
                         for (let door of doors) {
                             if (door.pos === id) {
                                 cellClass = `cell cell__${door.orientation}`
@@ -291,7 +303,124 @@ export default class GameBoard extends React.Component<any, any> {
                         />
                     </div>
 
-                    <div className="control__card-box">{cards}</div>
+                    <div className="control__cards">
+                        <p className="control__heading">Your drawn cards</p>
+                        <div className="control__card-box">{cards}</div>
+                    </div>
+
+                    {
+                        // if player is in suggest or accuse stage
+                        activePlayers[currentPlayer] === 'suggest' ||
+                        activePlayers[currentPlayer] === 'accuse' ? (
+                            <div className="control__suggest">
+                                <p className="control__heading">
+                                    {capitalize(activePlayers[currentPlayer])}
+                                </p>
+                                <div className="control__suggest-select">
+                                    <p className="control__subheading">
+                                        Weapon
+                                    </p>
+                                    {weaponDeck.map((weapon: Card) => {
+                                        return (
+                                            <label>
+                                                <input
+                                                    type="radio"
+                                                    value={weapon.name}
+                                                    name={weapon.type}
+                                                />
+                                                {weapon.name}
+                                            </label>
+                                        )
+                                    })}
+                                </div>
+                                <div className="control__suggest-select">
+                                    <p className="control__subheading">
+                                        Suspect
+                                    </p>
+                                    {suspectDeck.map((suspect: Card) => {
+                                        return (
+                                            <label>
+                                                <input
+                                                    type="radio"
+                                                    value={suspect.name}
+                                                    name={suspect.type}
+                                                />
+                                                {suspect.name}
+                                            </label>
+                                        )
+                                    })}
+                                </div>
+                                <div className="control__suggest-select">
+                                    <p className="control__subheading">Room</p>
+                                    {roomDeck.map((room: Card) => {
+                                        return (
+                                            <label>
+                                                <input
+                                                    type="radio"
+                                                    value={room.name}
+                                                    name={room.type}
+                                                />
+                                                {room.name}
+                                            </label>
+                                        )
+                                    })}
+                                </div>
+                                <div className="control__btn-box">
+                                    <input
+                                        type="button"
+                                        value={`Skip ${capitalize(
+                                            activePlayers[currentPlayer]
+                                        )}`}
+                                        className="control__btn"
+                                        onClick={() => {
+                                            if (
+                                                activePlayers[currentPlayer] ===
+                                                'suggest'
+                                            ) {
+                                                this.props.moves.MakeSuggestion(
+                                                    false
+                                                )
+                                            }
+                                            if (
+                                                activePlayers[currentPlayer] ===
+                                                'accuse'
+                                            ) {
+                                                this.props.moves.MakeAccusation(
+                                                    false
+                                                )
+                                            }
+                                        }}
+                                    />
+                                    <input
+                                        type="button"
+                                        value={`${capitalize(
+                                            activePlayers[currentPlayer]
+                                        )}`}
+                                        className="control__btn"
+                                        onClick={() => {
+                                            if (
+                                                activePlayers[currentPlayer] ===
+                                                'suggest'
+                                            ) {
+                                                this.props.moves.MakeSuggestion(
+                                                    true
+                                                )
+                                            }
+                                            if (
+                                                activePlayers[currentPlayer] ===
+                                                'accuse'
+                                            ) {
+                                                this.props.moves.MakeAccusation(
+                                                    true
+                                                )
+                                            }
+                                        }}
+                                        disabled // TODO take input from radio
+                                    />
+                                </div>
+                            </div>
+                        ) : null
+                    }
                 </div>
                 <table id="board">
                     <tbody>{tbody}</tbody>
