@@ -5,7 +5,6 @@ import { removeItemFromArray, capitalize } from '../../game/utils'
 
 import type { Room, Card } from '../../game/types'
 
-// TODO proper typing
 export default class GameBoard extends React.Component<any, any> {
     constructor(props: any) {
         super(props)
@@ -138,7 +137,7 @@ export default class GameBoard extends React.Component<any, any> {
             weaponDeck,
             suspectDeck,
         } = this.props.G
-        const { currentPlayer, activePlayers } = this.props.ctx
+        const { currentPlayer, activePlayers, gameover } = this.props.ctx
 
         const doors = rooms.flatMap(
             (room: Room) => room.doors !== undefined && room.doors
@@ -283,6 +282,13 @@ export default class GameBoard extends React.Component<any, any> {
             )
         }
 
+        if (gameover) {
+            return (
+                <h1>
+                    Player {currentPlayer} {gameover}
+                </h1>
+            )
+        }
         return (
             <div className="container">
                 <div className="control">
@@ -318,6 +324,9 @@ export default class GameBoard extends React.Component<any, any> {
                     </div>
 
                     {
+                        // TODO revise game rules
+                        // accusation should be allowed whether player is in room or not 
+                        // i.e. player is able to make accusation at the start of turn
                         // if player is in suggest or accuse stage
                         activePlayers[currentPlayer] === 'suggest' ||
                         activePlayers[currentPlayer] === 'accuse' ? (
@@ -432,7 +441,12 @@ export default class GameBoard extends React.Component<any, any> {
                                                 'accuse'
                                             ) {
                                                 this.props.moves.MakeAccusation(
-                                                    false
+                                                    false,
+                                                    {
+                                                        weapon: '',
+                                                        suspect: '',
+                                                        room: '',
+                                                    }
                                                 )
                                             }
                                         }}
@@ -463,7 +477,14 @@ export default class GameBoard extends React.Component<any, any> {
                                                 'accuse'
                                             ) {
                                                 this.props.moves.MakeAccusation(
-                                                    true
+                                                    true,
+                                                    {
+                                                        weapon: this.state
+                                                            .weapon,
+                                                        suspect: this.state
+                                                            .suspect,
+                                                        room: this.state.room,
+                                                    }
                                                 )
                                             }
                                         }}

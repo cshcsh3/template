@@ -2,10 +2,10 @@ import { rooms, players, roomDeck, suspectDeck, weaponDeck } from './types'
 
 import { removeItemFromArray } from './utils'
 
-type CaseFile = {
-    room: string
-    suspect: string
+type Case = {
     weapon: string
+    suspect: string
+    room: string
 }
 
 const DrawCard = (G: any, ctx: any) => {
@@ -41,19 +41,33 @@ const MakeSuggestion = (G: any, ctx: any, suggest: boolean) => {
     ctx.events.setStage('accuse')
 }
 
-const MakeAccusation = (G: any, ctx: any, accuse: boolean) => {
+const MakeAccusation = (
+    G: any,
+    ctx: any,
+    accuse: boolean,
+    accusation: Case
+) => {
     if (accuse) {
-        // TODO Make accusation
+        if (
+            accusation.weapon === G.caseFile.weapon &&
+            accusation.suspect === G.caseFile.suspect &&
+            accusation.room === G.caseFile.room
+        ) {
+            ctx.events.endGame('Win')
+        } else {
+            ctx.events.endGame('Lose')
+        }
+        return
     }
     ctx.events.endTurn()
 }
 
 export const NoClue = {
     setup: (ctx: any) => {
-        let caseFile: CaseFile = {
-            room: '',
-            suspect: '',
+        let caseFile: Case = {
             weapon: '',
+            suspect: '',
+            room: '',
         }
 
         let deck = roomDeck.concat(suspectDeck).concat(weaponDeck)
