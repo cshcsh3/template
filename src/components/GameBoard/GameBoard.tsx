@@ -7,6 +7,15 @@ import type { Room, Card } from '../../game/types'
 
 // TODO proper typing
 export default class GameBoard extends React.Component<any, any> {
+    constructor(props: any) {
+        super(props)
+        this.state = {
+            weapon: '',
+            suspect: '',
+            room: '',
+        }
+    }
+
     showText(
         stage: string,
         player: number,
@@ -320,50 +329,87 @@ export default class GameBoard extends React.Component<any, any> {
                                     <p className="control__subheading">
                                         Weapon
                                     </p>
-                                    {weaponDeck.map((weapon: Card) => {
-                                        return (
-                                            <label>
-                                                <input
-                                                    type="radio"
-                                                    value={weapon.name}
-                                                    name={weapon.type}
-                                                />
-                                                {weapon.name}
-                                            </label>
-                                        )
-                                    })}
+                                    {weaponDeck.map(
+                                        (weapon: Card, index: number) => {
+                                            return (
+                                                <label key={`w${index}`}>
+                                                    <input
+                                                        type="radio"
+                                                        value={weapon.name}
+                                                        name={weapon.type}
+                                                        onChange={() => {
+                                                            this.setState({
+                                                                weapon:
+                                                                    weapon.name,
+                                                            })
+                                                        }}
+                                                        checked={
+                                                            this.state
+                                                                .weapon ===
+                                                            weapon.name
+                                                        }
+                                                    />
+                                                    {weapon.name}
+                                                </label>
+                                            )
+                                        }
+                                    )}
                                 </div>
                                 <div className="control__suggest-select">
                                     <p className="control__subheading">
                                         Suspect
                                     </p>
-                                    {suspectDeck.map((suspect: Card) => {
-                                        return (
-                                            <label>
-                                                <input
-                                                    type="radio"
-                                                    value={suspect.name}
-                                                    name={suspect.type}
-                                                />
-                                                {suspect.name}
-                                            </label>
-                                        )
-                                    })}
+                                    {suspectDeck.map(
+                                        (suspect: Card, index: number) => {
+                                            return (
+                                                <label key={`s${index}`}>
+                                                    <input
+                                                        type="radio"
+                                                        value={suspect.name}
+                                                        name={suspect.type}
+                                                        onChange={() => {
+                                                            this.setState({
+                                                                suspect:
+                                                                    suspect.name,
+                                                            })
+                                                        }}
+                                                        checked={
+                                                            this.state
+                                                                .suspect ===
+                                                            suspect.name
+                                                        }
+                                                    />
+                                                    {suspect.name}
+                                                </label>
+                                            )
+                                        }
+                                    )}
                                 </div>
                                 <div className="control__suggest-select">
                                     <p className="control__subheading">Room</p>
-                                    {roomDeck.map((room: Card) => {
-                                        return (
-                                            <label>
-                                                <input
-                                                    type="radio"
-                                                    value={room.name}
-                                                    name={room.type}
-                                                />
-                                                {room.name}
-                                            </label>
-                                        )
-                                    })}
+                                    {roomDeck.map(
+                                        (room: Card, index: number) => {
+                                            return (
+                                                <label key={`r${index}`}>
+                                                    <input
+                                                        type="radio"
+                                                        value={room.name}
+                                                        name={room.type}
+                                                        onChange={() => {
+                                                            this.setState({
+                                                                room: room.name,
+                                                            })
+                                                        }}
+                                                        checked={
+                                                            this.state.room ===
+                                                            room.name
+                                                        }
+                                                    />
+                                                    {room.name}
+                                                </label>
+                                            )
+                                        }
+                                    )}
                                 </div>
                                 <div className="control__btn-box">
                                     <input
@@ -398,6 +444,12 @@ export default class GameBoard extends React.Component<any, any> {
                                         )}`}
                                         className="control__btn"
                                         onClick={() => {
+                                            // reset selected input state
+                                            this.setState({
+                                                weapon: '',
+                                                suspect: '',
+                                                room: '',
+                                            })
                                             if (
                                                 activePlayers[currentPlayer] ===
                                                 'suggest'
@@ -415,7 +467,13 @@ export default class GameBoard extends React.Component<any, any> {
                                                 )
                                             }
                                         }}
-                                        disabled // TODO take input from radio
+                                        disabled={
+                                            !(
+                                                this.state.weapon &&
+                                                this.state.suspect &&
+                                                this.state.room
+                                            )
+                                        }
                                     />
                                 </div>
                             </div>
